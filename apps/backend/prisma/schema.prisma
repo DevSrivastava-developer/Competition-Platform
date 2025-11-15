@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ORGANIZER
+  PARTICIPANT
+}
+
+enum RegistrationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  competitions  Competition[]
+  registrations Registration[]
+
+  @@map("users")
+}
+
+model Competition {
+  id           String   @id @default(uuid())
+  title        String
+  description  String
+  tags         String[]
+  capacity     Int
+  regDeadline  DateTime
+  startDate    DateTime?
+  organizerId  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organizer     User           @relation(fields: [organizerId], references: [id])
+  registrations Registration[]
+
+  @@map("competitions")
+}
+
+model Registration {
+  id              String             @id @default(uuid())
+  competitionId   String
+  userId          String
+  status          RegistrationStatus @default(PENDING)
+  idempotencyKey  String?            @unique
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, userId])
+  @@map("registrations")
+}
+
+model Mailbox {
+  id        String   @id @default(uuid())
+  to        String
+  subject   String
+  body      String
+  sentAt    DateTime @default(now())
+  metadata  Json?
+
+  @@map("mailbox")
+}

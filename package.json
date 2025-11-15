@@ -1,0 +1,33 @@
+{
+  "name": "competition-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "nest start",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "clean": "turbo run clean",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "backend:dev": "turbo run dev --filter=backend",
+    "frontend:dev": "turbo run dev --filter=frontend",
+    "backend:migrate": "cd apps/backend && npx prisma migrate dev",
+    "backend:seed": "cd apps/backend && npx prisma db seed",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "ts-node prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  }
+}
+
