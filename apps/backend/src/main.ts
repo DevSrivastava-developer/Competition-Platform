@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
     'http://localhost:3000',
-    'https://competition-platform-frontend.vercel.app' // <-- ADD THIS
+    'https://competition-platform-frontend.vercel.app' 
   ],
     credentials: true,
   });
